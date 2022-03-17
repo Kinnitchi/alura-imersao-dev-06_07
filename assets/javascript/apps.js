@@ -1,41 +1,93 @@
-const numeroSecreto = parseInt(Math.random() * 11);
-let numeroTentativas = 1;
-let limiteTentativas = 3;
+const cartas = [{
+  nome: 'Bulbassauro',
+  atributos: {
+    ataque: 7,
+    defesa: 8,
+    magia: 6,
+    inteligencia: 2
+  }
+}, {
+  nome: 'Darth Vader',
+  atributos: {
+    ataque: 9,
+    defesa: 8,
+    magia: 2,
+    inteligencia: 8
+  }
+}, {
+  nome: 'Shiryu De Dragão',
+  atributos: {
+    ataque: 8,
+    defesa: 8,
+    magia: 3,
+    inteligencia: 7
+  }
+}, {
+  nome: 'Gojo Satoru',
+  atributos: {
+    ataque: 7,
+    defesa: 6,
+    magia: 10,
+    inteligencia: 4
+  }
+}]
+console.log(cartas);
 
-console.log('NUMERO_SECRETO', numeroSecreto);
-console.log('LIMITE_TENTATIVAS', limiteTentativas);
-console.log('');
-console.log('NUMERO_TENTATIVAS', numeroTentativas);
+let cartaMaquina = 0;
+let cartaPlayer = 0;
 
-function chutar() {
-  const numeroInserido = parseInt(document.getElementById('valor').value)
-  const elementoResultado = document.getElementById('resultado');
-  const elementoTentativas = document.getElementById('tentativas');
-  let dica = '';
+// Pegar um valor  aleatorio do array!
+function sortearCarta() {
+  let randomCard = parseInt(Math.random() * cartas.length);
+  let randomCardPlayer = parseInt(Math.random() * cartas.length);
+  cartaMaquina = cartas[randomCard];
 
-  if (numeroInserido < numeroSecreto) {
-    dica = 'o número inserido é MENOR que o número secreto'
+  while (randomCard == randomCardPlayer) {
+    randomCardPlayer = parseInt(Math.random() * cartas.length);
+  }
+  cartaPlayer = cartas[randomCardPlayer];
+  console.log(cartaPlayer);
+
+  document.getElementById("btnSortear").disabled = true;
+  document.getElementById("btnJogar").disabled = false;
+
+  exibirOpcoes();
+}
+
+function exibirOpcoes() {
+  let opcao = document.getElementById('opcoes');
+
+  let opcaoText = ''
+  for (let atributo in cartaPlayer.atributos) {
+    opcaoText += '<input type="radio" name="atributo" value="' + atributo + '">' + atributo
+  }
+  opcao.innerHTML = opcaoText
+}
+
+function obtainValueAtributo() {
+  let radioAtributo = document.querySelector('input[name="atributo"]:checked').value;
+
+  if (radioAtributo != null) {
+    return radioAtributo;
   } else {
-    dica = 'o número inserido é MAIOR que o número secreto'
+    alert('Oi')
+
   }
 
-  elementoTentativas.innerHTML = numeroTentativas
+}
 
-  if (numeroTentativas <= limiteTentativas) {
-    numeroTentativas = numeroTentativas + 1
+function jogar() {
+  let valueAtributo = obtainValueAtributo();
+  let resultado = document.getElementById('resultado');
+
+  let valorCartaPlayer = cartaPlayer.atributos[valueAtributo];
+  let valorCartaMaquina = cartaMaquina.atributos[valueAtributo];
+
+  if (valorCartaPlayer > valorCartaMaquina) {
+    resultado.innerHTML = 'Voce Venceu!!! 🏆'
+  } else if (valorCartaMaquina > valorCartaPlayer) {
+    resultado.innerHTML = 'Voce Perdeu! 😞'
   } else {
-    elementoResultado.innerHTML = 'fim de jogo! o número secreto é: ' + numeroSecreto;
-  }
-  console.log('NUMERO_TENTATIVAS', numeroTentativas);
-
-
-  if (numeroTentativas <= limiteTentativas) {
-    if (numeroInserido === numeroSecreto) {
-      elementoResultado.innerHTML = '👍'
-    } else if (numeroInserido > 10 || numeroInserido < 0) {
-      elementoResultado.innerHTML = 'você deve inserir um número de 0 a 10.';
-    } else {
-      elementoResultado.innerHTML = '👎' + dica;
-    }
+    resultado.innerHTML = 'Empatou 🤝🏻'
   }
 }
